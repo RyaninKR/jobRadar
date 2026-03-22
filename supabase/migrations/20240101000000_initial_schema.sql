@@ -3,7 +3,7 @@ create extension if not exists "uuid-ossp";
 
 -- Create work_logs table
 create table public.work_logs (
-  id uuid default uuid_generate_v4() primary key,
+  id uuid default gen_random_uuid() primary key,
   user_id uuid references auth.users(id) on delete cascade not null,
   date date not null,
   title text not null,

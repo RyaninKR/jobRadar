@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 import { format } from 'date-fns';
 
 interface WorkLog {
@@ -70,13 +70,13 @@ export default function WorkLogList() {
     try {
       if (selectedLog) {
         // Update existing log
-        const { error } = await supabase
+        const { error } = await (supabase as any)
           .from('work_logs')
           .update({
             date: editForm.date,
             title: editForm.title,
             content: editForm.content,
-          } as any)
+          })
           .eq('id', selectedLog.id);
 
         if (error) throw error;

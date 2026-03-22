@@ -3,8 +3,8 @@ import { AuthProvider } from "@/lib/auth-context";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Workday - 업무 일지",
-  description: "iOS 스타일의 업무 일지 애플리케이션",
+  title: "JobRadar - 채용 모니터링 대시보드",
+  description: "AI 기반 채용 공고 통합 모니터링 대시보드",
 };
 
 export default function RootLayout({
