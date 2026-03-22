@@ -13,9 +13,14 @@ interface JobListProps {
 
 interface JobsResponse {
   data: JobPostingSummary[]
-  total: number
-  page: number
-  per_page: number
+  pagination: {
+    page: number
+    limit: number
+    total: number
+    total_pages: number
+    has_next: boolean
+    has_prev: boolean
+  }
 }
 
 const PER_PAGE = 12
@@ -57,15 +62,18 @@ export function JobList({ filters }: JobListProps) {
     try {
       const params = new URLSearchParams()
       params.set('page', String(page))
-      params.set('per_page', String(PER_PAGE))
+      params.set('limit', String(PER_PAGE))
 
-      if (filters.query) params.set('query', filters.query)
-      if (filters.sources?.length)
-        params.set('sources', filters.sources.join(','))
-      if (filters.locations?.length)
-        params.set('locations', filters.locations.join(','))
-      if (filters.skills?.length)
-        params.set('skills', filters.skills.join(','))
+      if (filters.query) params.set('q', filters.query)
+      if (filters.sources?.length) {
+        filters.sources.forEach((s) => params.append('source', s))
+      }
+      if (filters.locations?.length) {
+        params.set('location', filters.locations[0])
+      }
+      if (filters.skills?.length) {
+        params.set('skill', filters.skills[0])
+      }
       if (filters.experience_min !== undefined)
         params.set('experience_min', String(filters.experience_min))
       if (filters.experience_max !== undefined)
@@ -82,8 +90,8 @@ export function JobList({ filters }: JobListProps) {
       }
 
       const json: JobsResponse = await res.json()
-      setJobs(json.data)
-      setTotal(json.total)
+      setJobs(json.data ?? [])
+      setTotal(json.pagination?.total ?? 0)
     } catch (err) {
       setError(
         err instanceof Error
